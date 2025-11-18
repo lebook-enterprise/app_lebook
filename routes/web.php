@@ -16,4 +16,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+// just admin stuff
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('products', function () {
+        return Inertia::render('products');
+    })->name('products');
+});
+
 require __DIR__.'/settings.php';
