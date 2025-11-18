@@ -13,53 +13,71 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Inventory() {
-    const [search, setSearch] = useState('');
+    const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Inventory" />
-
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
-                {/* Search Bar Block */}
-                <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border h-10">
-                    <form action="" method="GET">
-                        <input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            type="text"
-                            className="m-2 w-100"
-                            placeholder="Search products"
-                        />
-                    </form>
+                {/* Action Buttons */}
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => setActiveForm(activeForm === 'in' ? null : 'in')}
+                        className="rounded-xl border border-sidebar-border px-4 py-2 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    >
+                        Check In
+                    </button>
+
+                    <button
+                        onClick={() => setActiveForm(activeForm === 'out' ? null : 'out')}
+                        className="rounded-xl border border-sidebar-border px-4 py-2 text-sm font-medium hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                    >
+                        Check Out
+                    </button>
                 </div>
 
-                {/* Content Blocks */}
-                <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-
-                    {/* Product List */}
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                        <h1 className="p-4 font-semibold text-lg">Product List</h1>
-
-                        {/* Preview section for list */}
-                        <p className="p-4 text-sm opacity-70">
-                            Display the list of products here...
-                        </p>
+                {activeForm === 'in' && (
+                    <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 p-4">
+                        <h2 className="font-semibold text-lg mb-4">Check In Product</h2>
+                        <form>
+                            <input
+                                type="text"
+                                placeholder="Product ID"
+                                className="mb-2 w-full rounded-lg border p-2"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Quantity"
+                                className="mb-2 w-full rounded-lg border p-2"
+                            />
+                            <button className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900">
+                                Submit
+                            </button>
+                        </form>
                     </div>
+                )}
 
-                    {/* Product Status / Analytics */}
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                        <h1 className="p-4 font-semibold text-lg">Categories / Status</h1>
-
-                        {/* Preview section for hints */}
-                        <p className="p-4 text-sm opacity-70">
-                            Filters, categories, or analytics can go here.
-                        </p>
+                {activeForm === 'out' && (
+                    <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 p-4">
+                        <h2 className="font-semibold text-lg mb-4">Check Out Product</h2>
+                        <form>
+                            <input
+                                type="text"
+                                placeholder="Product ID"
+                                className="mb-2 w-full rounded-lg border p-2"
+                            />
+                            <input
+                                type="number"
+                                placeholder="Quantity"
+                                className="mb-2 w-full rounded-lg border p-2"
+                            />
+                            <button className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900">
+                                Submit
+                            </button>
+                        </form>
                     </div>
-
-                </div>
+                )}
             </div>
         </AppLayout>
     );
