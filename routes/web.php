@@ -16,6 +16,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('inventory', function () {
+        return Inertia::render('inventory');
+    })->name('inventory');
+});
+
 // just admin stuff
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('products', function () {
