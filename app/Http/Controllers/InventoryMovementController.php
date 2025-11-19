@@ -64,7 +64,21 @@ class InventoryMovementController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        $product = Product::findOrFail($data['product_id']);
+        $product = Product::with('stock')->findOrFail($data['product_id']);
+
+        // Ensure stock exists
+        if (!$product->stock || $product->stock->quantity <= 0) {
+            return redirect()->back()->withErrors([
+                'quantity' => 'This product has no stock available.',
+            ]);
+        }
+
+        // Ensure enough stock
+        if ($product->stock->quantity < $data['quantity']) {
+            return redirect()->back()->withErrors([
+                'quantity' => "Not enough stock. Available: {$product->stock->quantity}",
+            ])->withInput();
+        }
 
         // Decrease stock + create movement
         $product->decreaseStock(
