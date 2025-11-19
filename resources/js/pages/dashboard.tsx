@@ -25,7 +25,7 @@ interface InventoryMovement {
     };
     type: 'in' | 'out' | 'adjustment';
     quantity: number;
-    notes?: string;
+    note?: string;
     created_at: string;
 }
 
@@ -157,7 +157,7 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
                                                 {movement.user.name}
                                             </td>
                                             <td className="p-4 text-sm text-neutral-600 dark:text-neutral-400">
-                                                {movement.notes || '-'}
+                                                {movement.note || '-'}
                                             </td>
                                         </tr>
                                     ))
