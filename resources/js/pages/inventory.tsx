@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { inventory } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,12 +12,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+interface Product {
+    id: number;
+    name: string;
+    sku: string;
+    category_id?: number;
+}
+
 interface InventoryProps {
-    products: Array<{
-        id: number;
-        name: string;
-        sku: string;
-    }>;
+    products: Product[];
     categories: Array<{
         id: number;
         name: string;
@@ -28,6 +31,10 @@ interface InventoryProps {
 export default function Inventory({ products, categories }: InventoryProps) {
     const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // --- Check In Form ---
     const {
@@ -58,11 +65,58 @@ export default function Inventory({ products, categories }: InventoryProps) {
         note: "",
     });
 
+    // Filter products based on search term
+    useEffect(() => {
+        if (searchTerm.trim() === '') {
+            setFilteredProducts([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const filtered = products.filter(product =>
+            product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setFilteredProducts(filtered);
+        setShowDropdown(filtered.length > 0);
+    }, [searchTerm, products]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Handle product selection from dropdown
+    const handleSelectProduct = (product: Product) => {
+        setSearchTerm(product.sku);
+        setInData('name', product.name);
+        if (product.category_id) {
+            setInData('category_id', product.category_id.toString());
+        }
+        setShowDropdown(false);
+    };
+
+    // Handle search input change
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        setInData('name', value);
+    };
+
     const submitCheckIn = (e: any) => {
         e.preventDefault();
         postIn("/inventory/check-in", {
             onSuccess: () => {
                 resetIn();
+                setSearchTerm('');
                 setSuccessMessage('Product checked in successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000);
             },
@@ -116,15 +170,41 @@ export default function Inventory({ products, categories }: InventoryProps) {
                         <h2 className="font-semibold text-lg mb-4">Check In Product</h2>
 
                         <form onSubmit={submitCheckIn} className="space-y-3">
-                            {/* Product Name */}
-                            <input
-                                type="text"
-                                placeholder="Product name"
-                                value={inData.name}
-                                onChange={(e) => setInData("name", e.target.value)}
-                                className="w-full rounded-lg border p-2"
-                            />
-                            {inErrors.name && <p className="text-red-500 text-sm">{inErrors.name}</p>}
+                            {/* Product Search/Name with Autocomplete */}
+                            <div className="relative" ref={dropdownRef}>
+                                <input
+                                    type="text"
+                                    placeholder="Search by SKU or product name"
+                                    value={searchTerm || inData.name}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => {
+                                        if (filteredProducts.length > 0) {
+                                            setShowDropdown(true);
+                                        }
+                                    }}
+                                    className="w-full rounded-lg border p-2"
+                                />
+                                {inErrors.name && <p className="text-red-500 text-sm mt-1">{inErrors.name}</p>}
+
+                                {/* Dropdown */}
+                                {showDropdown && filteredProducts.length > 0 && (
+                                    <div className="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-800 border border-sidebar-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        {filteredProducts.map((product) => (
+                                            <button
+                                                key={product.id}
+                                                type="button"
+                                                onClick={() => handleSelectProduct(product)}
+                                                className="w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 flex flex-col"
+                                            >
+                                                <span className="font-medium">{product.name}</span>
+                                                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                                                    SKU: {product.sku}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Category ID */}
                             <select
@@ -139,6 +219,7 @@ export default function Inventory({ products, categories }: InventoryProps) {
                                     </option>
                                 ))}
                             </select>
+                            {inErrors.category_id && <p className="text-red-500 text-sm">{inErrors.category_id}</p>}
 
                             {/* Quantity */}
                             <input

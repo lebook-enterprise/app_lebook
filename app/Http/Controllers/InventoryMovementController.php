@@ -16,7 +16,7 @@ class InventoryMovementController extends Controller
     public function index(): Response
     {
         return Inertia::render('inventory', [
-            'products' => Product::select('id', 'name', 'sku')->get(),
+            'products' => Product::select('id', 'name', 'sku', 'category_id')->get(),
             'categories' => Category::select('id', 'name')->get(),
         ]);
     }
