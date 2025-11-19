@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { inventory } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,6 +27,7 @@ interface InventoryProps {
 
 export default function Inventory({ products, categories }: InventoryProps) {
     const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
+    const [successMessage, setSuccessMessage] = useState('');
 
     // --- Check In Form ---
     const {
@@ -35,6 +36,7 @@ export default function Inventory({ products, categories }: InventoryProps) {
         post: postIn,
         processing: inProcessing,
         errors: inErrors,
+        reset: resetIn,
     } = useForm({
         name: "",
         category_id: "",
@@ -49,6 +51,7 @@ export default function Inventory({ products, categories }: InventoryProps) {
         post: postOut,
         processing: outProcessing,
         errors: outErrors,
+        reset: resetOut,
     } = useForm({
         product_id: "",
         quantity: "",
@@ -57,12 +60,24 @@ export default function Inventory({ products, categories }: InventoryProps) {
 
     const submitCheckIn = (e: any) => {
         e.preventDefault();
-        postIn("/inventory/check-in");
+        postIn("/inventory/check-in", {
+            onSuccess: () => {
+                resetIn();
+                setSuccessMessage('Product checked in successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            },
+        });
     };
 
     const submitCheckOut = (e: any) => {
         e.preventDefault();
-        postOut("/inventory/check-out");
+        postOut("/inventory/check-out", {
+            onSuccess: () => {
+                resetOut();
+                setSuccessMessage('Product checked out successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            },
+        });
     };
 
     return (
@@ -70,6 +85,13 @@ export default function Inventory({ products, categories }: InventoryProps) {
             <Head title="Inventory" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+
+                {/* Success Message */}
+                {successMessage && (
+                    <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200">
+                        {successMessage}
+                    </div>
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex gap-4">
@@ -138,9 +160,9 @@ export default function Inventory({ products, categories }: InventoryProps) {
 
                             <button
                                 disabled={inProcessing}
-                                className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                                className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 disabled:opacity-50"
                             >
-                                Submit
+                                {inProcessing ? 'Submitting...' : 'Submit'}
                             </button>
                         </form>
                     </div>
@@ -187,9 +209,9 @@ export default function Inventory({ products, categories }: InventoryProps) {
 
                             <button
                                 disabled={outProcessing}
-                                className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                                className="mt-2 rounded-lg border px-4 py-2 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 disabled:opacity-50"
                             >
-                                Submit
+                                {outProcessing ? 'Submitting...' : 'Submit'}
                             </button>
                         </form>
                     </div>
