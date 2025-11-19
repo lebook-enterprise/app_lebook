@@ -31,6 +31,7 @@ interface InventoryProps {
 export default function Inventory({ products, categories }: InventoryProps) {
     const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -131,6 +132,17 @@ export default function Inventory({ products, categories }: InventoryProps) {
                 setSuccessMessage('Product checked out successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000);
             },
+            onError: (errors) => {
+                resetOut();
+                // Show the actual error coming from Laravel
+                if (errors.stock) {
+                    setErrorMessage(errors.stock);
+                } else {
+                    setErrorMessage("An unexpected error occurred.");
+                }
+
+                setTimeout(() => setErrorMessage(''), 3000);
+            },
         });
     };
 
@@ -144,6 +156,13 @@ export default function Inventory({ products, categories }: InventoryProps) {
                 {successMessage && (
                     <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200">
                         {successMessage}
+                    </div>
+                )}
+
+                {/* errorMessage Message */}
+                {errorMessage && (
+                    <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200">
+                        {errorMessage}
                     </div>
                 )}
 

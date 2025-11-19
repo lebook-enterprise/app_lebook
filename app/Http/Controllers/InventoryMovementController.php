@@ -67,16 +67,16 @@ class InventoryMovementController extends Controller
         $product = Product::with('stock')->findOrFail($data['product_id']);
 
         // Ensure stock exists
-        if ($product->stock->stock <= 0) {
+        if (!$product->stock || $product->stock->stock <= 0) {
             return redirect()->back()->withErrors([
-                'stock' => "This product has no stock available.",
+                'stock' => 'This product has no stock available.',
             ]);
         }
 
         // Ensure enough stock
         if ($product->stock->stock < $data['quantity']) {
             return redirect()->back()->withErrors([
-                'stock' => "Not enough stock. Available: {$product->stock->quantity}",
+                'stock' => "Not enough stock. Available: {$product->stock->stock}",
             ])->withInput();
         }
 
