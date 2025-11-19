@@ -12,13 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Inventory({
-    categories,
-    // products,
-}: {
-    categories: { id: number; name: string }[];
-    // products: { id: number; name: string; category_id: number }[];
-}) {
+export default function Inventory({ products, categories }) {
     const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
 
     // --- Check In Form ---
@@ -101,15 +95,16 @@ export default function Inventory({
                             <select
                                 value={inData.category_id}
                                 onChange={(e) => setInData("category_id", e.target.value)}
-                                className="mb-2 w-full rounded-lg border p-2"
+                                className="w-full rounded-lg border p-2"
                             >
-                                <option value="">Select Category</option>
-                                {categories.map((cat) => (
+                                <option value="">Select category </option>
+                                {categories?.map((cat) => (
                                     <option key={cat.id} value={cat.id}>
                                         {cat.name}
                                     </option>
                                 ))}
                             </select>
+
                             {/* Quantity */}
                             <input
                                 type="number"
