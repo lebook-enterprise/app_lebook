@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,6 +17,7 @@ interface InventoryMovement {
         name: string;
     };
     product: {
+        id?: number;
         name: string;
         sku: string;
         stock?: {
@@ -35,15 +36,65 @@ interface DashboardProps {
 
 export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
     const [search, setSearch] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [suggestions, setSuggestions] = useState<
+        { name: string; sku: string; id?: number }[]
+    >([]);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
-    // Filter movements based on search
+    // Extract unique products from movements (deduplicated by SKU)
+    const allProducts = useMemo(() => {
+        const map = new Map<string, { name: string; sku: string; id?: number }>();
+        for (const m of inventoryMovements) {
+            if (m.product?.sku) {
+                map.set(m.product.sku, {
+                    name: m.product.name,
+                    sku: m.product.sku,
+                    id: m.product.id,
+                });
+            }
+        }
+        return Array.from(map.values());
+    }, [inventoryMovements]);
+
+    // Filter movements based on search (keeps original behavior)
     const filteredMovements = inventoryMovements.filter(movement =>
         movement.product.name.toLowerCase().includes(search.toLowerCase()) ||
         movement.product.sku.toLowerCase().includes(search.toLowerCase()) ||
         movement.user.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    // Helper function to format the movement type
+    // Build suggestions based on search term
+    useEffect(() => {
+        const term = search.trim();
+        if (term === '') {
+            setSuggestions([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const filtered = allProducts.filter(p =>
+            p.name.toLowerCase().includes(term.toLowerCase()) ||
+            p.sku.toLowerCase().includes(term.toLowerCase())
+        );
+
+        setSuggestions(filtered);
+        setShowDropdown(filtered.length > 0);
+    }, [search, allProducts]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Helpers
     const getMovementTypeLabel = (type: string) => {
         switch (type) {
             case 'in':
@@ -57,7 +108,6 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
         }
     };
 
-    // Helper function to get badge color
     const getMovementTypeColor = (type: string) => {
         switch (type) {
             case 'in':
@@ -71,7 +121,6 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
         }
     };
 
-    // Format date
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleString('en-US', {
@@ -88,15 +137,43 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
-                {/* Search Bar */}
-                <div className="relative overflow-hidden rounded-xl border border-sidebar-border">
+                {/* Search Bar With Suggestions */}
+                <div className="relative overflow-visible rounded-xl border border-sidebar-border" ref={dropdownRef}>
                     <input
+                        ref={inputRef}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         type="text"
                         className="w-full p-3 bg-transparent border-0 focus:outline-none focus:ring-0"
                         placeholder="Search by product, SKU, or user..."
+                        onFocus={() => {
+                            if (suggestions.length > 0) setShowDropdown(true);
+                        }}
                     />
+
+                    {/* Dropdown */}
+                    {showDropdown && suggestions.length > 0 && (
+                        <div className="absolute top-full left-0 w-full z-20 mt-1 bg-white dark:bg-neutral-800 border border-sidebar-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            {suggestions.map((item) => (
+                                <button
+                                    key={item.sku}
+                                    type="button"
+                                    onClick={() => {
+                                        // Set the search input to the product name (keeps existing filter behavior)
+                                        setSearch(item.name);
+                                        setShowDropdown(false);
+
+                                        // focus back to input so user can continue typing if needed
+                                        setTimeout(() => inputRef.current?.focus(), 0);
+                                    }}
+                                    className="w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 flex flex-col"
+                                >
+                                    <span className="font-medium">{item.name}</span>
+                                    <span className="text-xs text-neutral-600 dark:text-neutral-400">SKU: {item.sku}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Inventory Movements Table */}
