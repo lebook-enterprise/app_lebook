@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
+use Inertia\Inertia;
 
 class InventoryMovement extends Model
 {
@@ -22,5 +24,12 @@ class InventoryMovement extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function index()
+    {
+        return Inertia::render('Inventory/Inventory', [
+            'categories' => Category::select('id', 'name')->get(),
+        ]);
     }
 }
