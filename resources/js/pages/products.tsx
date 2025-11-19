@@ -40,6 +40,7 @@ export default function Products({ products = [], categories = [] }: ProductsPro
     const [search, setSearch] = useState('');
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, setData, put, processing, errors, reset } = useForm({
         name: '',
@@ -74,6 +75,8 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                 setShowModal(false);
                 setEditingProduct(null);
                 reset();
+                setSuccessMessage('Product updated successfully!');
+                setTimeout(() => setSuccessMessage(''), 3000);
             },
         });
     };
@@ -88,6 +91,8 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                     setShowModal(false);
                     setEditingProduct(null);
                     reset();
+                    setSuccessMessage('Product deleted successfully!');
+                    setTimeout(() => setSuccessMessage(''), 3000);
                 },
             });
         }
@@ -105,6 +110,13 @@ export default function Products({ products = [], categories = [] }: ProductsPro
             <Head title="Products" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+
+                {/* Success Message */}
+                {successMessage && (
+                    <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200">
+                        {successMessage}
+                    </div>
+                )}
 
                 {/* Search Bar */}
                 <div className="relative overflow-hidden rounded-xl border border-sidebar-border">
