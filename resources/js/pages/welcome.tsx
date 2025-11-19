@@ -8,6 +8,7 @@ export default function Welcome({
     canRegister?: boolean;
 }) {
     const { auth } = usePage<SharedData>().props;
+    //why
 
     return (
         <>
