@@ -30,58 +30,84 @@ interface InventoryMovement {
     created_at: string;
 }
 
-interface DashboardProps {
-    inventoryMovements: InventoryMovement[];
+interface ProductLite {
+    id?: number;
+    name: string;
+    sku: string;
 }
 
-export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
+interface DashboardProps {
+    inventoryMovements: InventoryMovement[];
+    products?: ProductLite[];
+}
+
+export default function Dashboard({ inventoryMovements = [], products = [] }: DashboardProps) {
+    // Search + UI state
     const [search, setSearch] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
-    const [suggestions, setSuggestions] = useState<
-        { name: string; sku: string; id?: number }[]
-    >([]);
+    const [suggestions, setSuggestions] = useState<ProductLite[]>([]);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    // Extract unique products from movements (deduplicated by SKU)
-    const allProducts = useMemo(() => {
-        const map = new Map<string, { name: string; sku: string; id?: number }>();
+    // Keep original movements and filtered movements in state so clearing search restores all
+    const [allMovements] = useState<InventoryMovement[]>(inventoryMovements);
+    const [filteredMovements, setFilteredMovements] = useState<InventoryMovement[]>(inventoryMovements);
+
+    // Build product list: prefer `products` prop, otherwise dedupe from movements
+    const productList = useMemo<ProductLite[]>(() => {
+        if (Array.isArray(products) && products.length > 0) {
+            // ensure unique by sku
+            const map = new Map<string, ProductLite>();
+            for (const p of products) {
+                if (p.sku) map.set(p.sku, p);
+            }
+            return Array.from(map.values());
+        }
+
+        const map = new Map<string, ProductLite>();
         for (const m of inventoryMovements) {
             if (m.product?.sku) {
                 map.set(m.product.sku, {
+                    id: m.product.id,
                     name: m.product.name,
                     sku: m.product.sku,
-                    id: m.product.id,
                 });
             }
         }
         return Array.from(map.values());
-    }, [inventoryMovements]);
+    }, [products, inventoryMovements]);
 
-    // Filter movements based on search (keeps original behavior)
-    const filteredMovements = inventoryMovements.filter(movement =>
-        movement.product.name.toLowerCase().includes(search.toLowerCase()) ||
-        movement.product.sku.toLowerCase().includes(search.toLowerCase()) ||
-        movement.user.name.toLowerCase().includes(search.toLowerCase())
-    );
-
-    // Build suggestions based on search term
+    // Filter table when search changes
     useEffect(() => {
-        const term = search.trim();
+        const term = search.trim().toLowerCase();
         if (term === '') {
-            setSuggestions([]);
-            setShowDropdown(false);
+            setFilteredMovements(allMovements);
             return;
         }
 
-        const filtered = allProducts.filter(p =>
+        const result = allMovements.filter(movement =>
+            (movement.product?.name || '').toLowerCase().includes(term) ||
+            (movement.product?.sku || '').toLowerCase().includes(term) ||
+            (movement.user?.name || '').toLowerCase().includes(term)
+        );
+
+        setFilteredMovements(result);
+    }, [search, allMovements]);
+
+    useEffect(() => {
+        const term = search.trim();
+        if (term === '') {
+            setSuggestions(productList.slice(0, 100));
+            return;
+        }
+
+        const filtered = productList.filter(p =>
             p.name.toLowerCase().includes(term.toLowerCase()) ||
             p.sku.toLowerCase().includes(term.toLowerCase())
         );
 
-        setSuggestions(filtered);
-        setShowDropdown(filtered.length > 0);
-    }, [search, allProducts]);
+        setSuggestions(filtered.slice(0, 100));
+    }, [search, productList]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -94,7 +120,7 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Helpers
+    // Helpers for UI/formatting
     const getMovementTypeLabel = (type: string) => {
         switch (type) {
             case 'in':
@@ -132,6 +158,19 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
         });
     };
 
+    // Handlers
+    const handleInputFocus = () => {
+        setSuggestions(productList.slice(0, 100));
+        setShowDropdown(productList.length > 0);
+    };
+
+    const handleSelectSuggestion = (item: ProductLite) => {
+        setSearch(`${item.sku}`);
+        setShowDropdown(false);
+
+        // setTimeout(() => inputRef.current?.focus(), 0);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -143,12 +182,10 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
                         ref={inputRef}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
+                        onFocus={handleInputFocus}
                         type="text"
                         className="w-full p-3 bg-transparent border-0 focus:outline-none focus:ring-0"
                         placeholder="Search by product, SKU, or user..."
-                        onFocus={() => {
-                            if (suggestions.length > 0) setShowDropdown(true);
-                        }}
                     />
 
                     {/* Dropdown */}
@@ -158,17 +195,13 @@ export default function Dashboard({ inventoryMovements = [] }: DashboardProps) {
                                 <button
                                     key={item.sku}
                                     type="button"
-                                    onClick={() => {
-                                        // Set the search input to the product name (keeps existing filter behavior)
-                                        setSearch(item.name);
-                                        setShowDropdown(false);
-
-                                        // focus back to input so user can continue typing if needed
-                                        setTimeout(() => inputRef.current?.focus(), 0);
-                                    }}
+                                    onClick={() => handleSelectSuggestion(item)}
                                     className="w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 flex flex-col"
                                 >
-                                    <span className="font-medium">{item.name}</span>
+                                    <div className="flex justify-between">
+                                        <span className="font-medium">{item.name}</span>
+                                        <span className="text-xs text-neutral-500 dark:text-neutral-400">{item.sku}</span>
+                                    </div>
                                     <span className="text-xs text-neutral-600 dark:text-neutral-400">SKU: {item.sku}</span>
                                 </button>
                             ))}
