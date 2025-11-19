@@ -12,7 +12,20 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Inventory({ products, categories }) {
+interface InventoryProps {
+    products: Array<{
+        id: number;
+        name: string;
+        sku: string;
+    }>;
+    categories: Array<{
+        id: number;
+        name: string;
+    }>;
+}
+
+
+export default function Inventory({ products, categories }: InventoryProps) {
     const [activeForm, setActiveForm] = useState<'in' | 'out' | null>(null);
 
     // --- Check In Form ---

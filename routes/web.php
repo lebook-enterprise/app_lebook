@@ -20,9 +20,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('inventory', function () {
-        return Inertia::render('inventory');
-    })->name('inventory');
+    /* Route::get('inventory', function () { */
+    /*     return Inertia::render('inventory'); */
+    /* })->name('inventory'); */
+
+    Route::get('inventory', [InventoryMovementController::class, 'index'])->name('inventory');
 
     Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn'])
         ->name('inventory.checkin');
