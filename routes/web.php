@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -20,10 +21,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    /* Route::get('inventory', function () { */
-    /*     return Inertia::render('inventory'); */
-    /* })->name('inventory'); */
-
     Route::get('inventory', [InventoryMovementController::class, 'index'])->name('inventory');
 
     Route::post('/inventory/check-in', [InventoryMovementController::class, 'checkIn'])
@@ -35,9 +32,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // just admin stuff
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('products', function () {
-        return Inertia::render('products');
-    })->name('products');
+    Route::get('products', [ProductController::class, 'index'])
+        ->name('products');
+
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 });
 
 require __DIR__ . '/settings.php';
