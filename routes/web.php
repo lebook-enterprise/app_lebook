@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\InventoryMovementController;
-use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -30,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('inventory.checkout');
 });
 
-// just admin stuff
+// Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('products', [ProductController::class, 'index'])
         ->name('products');
