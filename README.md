@@ -112,7 +112,15 @@ or
 - Remember to run migrations after pulling new changes.
 - Ensure roles exist in the database.
 - Admin permissions are required for management operations.
+  
+if you want better support with NeoVim and intelephense:
 
+```bash
+composer require --dev barryvdh/laravel-ide-helper
+php artisan ide-helper:generate
+php artisan ide-helper:models --nowrite
+php artisan ide-helper:meta
+```
 ---
 
 # Contributing
