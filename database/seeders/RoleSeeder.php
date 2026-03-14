@@ -13,6 +13,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // the user role is created at signUp
         Role::firstOrCreate(
             ['name' => 'admin'],
         );
