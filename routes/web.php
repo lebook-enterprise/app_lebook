@@ -33,8 +33,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('products', [ProductController::class, 'index'])
         ->name('products');
 
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+    // Categories
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 require __DIR__.'/settings.php';
