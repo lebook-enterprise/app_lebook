@@ -88,7 +88,7 @@ export default function Inventory({
     const historyDropdownRef = useRef<HTMLDivElement | null>(null);
     const historyInputRef = useRef<HTMLInputElement | null>(null);
 
-    const [lowStockThreshold, setLowStockThreshold] = useState(5);
+    const [lowStockThreshold, setLowStockThreshold] = useState(0);
 
     // ── Derived state: stats calculation ──────────────────────────────────
 
@@ -382,22 +382,23 @@ export default function Inventory({
                             <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase dark:text-neutral-400">
                                 Low Stock
                             </p>
-                            <div className="flex items-center gap-1">
-                                <span className="text-[10px] text-neutral-400">
-                                    T:
+                            <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-medium text-neutral-400 uppercase">
+                                    Limit:
                                 </span>
                                 <input
                                     type="number"
                                     min={0}
-                                    max={100}
+                                    max={999}
                                     value={lowStockThreshold}
                                     onChange={(e) =>
                                         setLowStockThreshold(
                                             parseInt(e.target.value) || 0,
                                         )
                                     }
-                                    className="w-8 border-none bg-transparent p-0 text-[10px] font-bold text-neutral-500 focus:ring-0 focus:outline-none"
+                                    className="w-10 [appearance:textfield] rounded-md border border-neutral-200 bg-white px-1 py-0.5 text-center text-[11px] font-bold text-neutral-700 shadow-sm transition-colors hover:border-neutral-300 focus:border-neutral-400 focus:ring-0 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:focus:border-neutral-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                     title="Edit low stock threshold"
+                                    aria-label="Low stock threshold"
                                 />
                             </div>
                         </div>
