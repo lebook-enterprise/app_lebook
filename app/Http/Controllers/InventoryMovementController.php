@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use App\Models\Product;
 use App\Models\Category;
 use App\Models\InventoryMovement;
+use App\Models\Product;
+use App\Models\ProductStock;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,20 +28,20 @@ class InventoryMovementController extends Controller
             'categories' => Category::select('id', 'name')->get(),
             'inventoryMovements' => $inventoryMovements,
             'stats' => [
-                'total_skus'      => \App\Models\Product::count(),
-                'in_stock'        => \App\Models\ProductStock::sum('stock'),
-                'checked_out_today' => \App\Models\InventoryMovement::whereDate('created_at', today())
+                'total_skus' => Product::count(),
+                'in_stock' => ProductStock::sum('stock'),
+                'checked_out_today' => InventoryMovement::whereDate('created_at', today())
                     ->where('type', 'out')
                     ->sum('quantity'),
-                'low_stock'       => \App\Models\ProductStock::where('stock', '<=', 10)->count(),
+                'low_stock' => ProductStock::where('stock', '<=', 10)->count(),
             ],
         ]);
     }
+
     /**
      * Handle check-in (add stock)
      *
      * @parma Request $request
-     * @return RedirectResponse
      */
     public function checkIn(Request $request): RedirectResponse
     {
@@ -74,9 +75,6 @@ class InventoryMovementController extends Controller
 
     /**
      * Handle check-out (remove stock)
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function checkOut(Request $request): RedirectResponse
     {
@@ -89,7 +87,7 @@ class InventoryMovementController extends Controller
         $product = Product::with('stock')->findOrFail($data['product_id']);
 
         // Ensure stock exists
-        if (!$product->stock || $product->stock->stock <= 0) {
+        if (! $product->stock || $product->stock->stock <= 0) {
             return redirect()->back()->withErrors([
                 'stock' => 'This product has no stock available.',
             ]);

@@ -1,8 +1,7 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { products as productsRoute } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -36,7 +35,10 @@ interface ProductsProps {
     categories: Category[];
 }
 
-export default function Products({ products = [], categories = [] }: ProductsProps) {
+export default function Products({
+    products = [],
+    categories = [],
+}: ProductsProps) {
     const [search, setSearch] = useState('');
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [showModal, setShowModal] = useState(false);
@@ -49,9 +51,10 @@ export default function Products({ products = [], categories = [] }: ProductsPro
     });
 
     // Filter products based on search
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(search.toLowerCase()) ||
-        product.sku.toLowerCase().includes(search.toLowerCase())
+    const filteredProducts = products.filter(
+        (product) =>
+            product.name.toLowerCase().includes(search.toLowerCase()) ||
+            product.sku.toLowerCase().includes(search.toLowerCase()),
     );
 
     // Open edit modal
@@ -85,7 +88,9 @@ export default function Products({ products = [], categories = [] }: ProductsPro
     const handleDelete = () => {
         if (!editingProduct) return;
 
-        if (confirm(`Are you sure you want to delete "${editingProduct.name}"?`)) {
+        if (
+            confirm(`Are you sure you want to delete "${editingProduct.name}"?`)
+        ) {
             router.delete(`/products/${editingProduct.id}`, {
                 onSuccess: () => {
                     setShowModal(false);
@@ -110,10 +115,9 @@ export default function Products({ products = [], categories = [] }: ProductsPro
             <Head title="Products" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-
                 {/* Success Message */}
                 {successMessage && (
-                    <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200">
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 dark:border-green-800 dark:bg-green-900/20 dark:text-green-200">
                         {successMessage}
                     </div>
                 )}
@@ -124,7 +128,7 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         type="text"
-                        className="w-full p-3 bg-transparent border-0 focus:outline-none focus:ring-0"
+                        className="w-full border-0 bg-transparent p-3 focus:ring-0 focus:outline-none"
                         placeholder="Search products by name or SKU..."
                     />
                 </div>
@@ -137,22 +141,40 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                                 <tr className="text-left">
                                     <th className="p-4 font-semibold">Name</th>
                                     <th className="p-4 font-semibold">SKU</th>
-                                    <th className="p-4 font-semibold">Category</th>
+                                    <th className="p-4 font-semibold">
+                                        Category
+                                    </th>
                                     <th className="p-4 font-semibold">Stock</th>
-                                    <th className="p-4 font-semibold">Actions</th>
+                                    <th className="p-4 font-semibold">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredProducts.length > 0 ? (
                                     filteredProducts.map((product) => (
-                                        <tr key={product.id} className="border-b border-sidebar-border/50 hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
-                                            <td className="p-4">{product.name}</td>
-                                            <td className="p-4 text-neutral-600 dark:text-neutral-400">{product.sku}</td>
-                                            <td className="p-4">{product.category?.name || 'N/A'}</td>
-                                            <td className="p-4">{product.stock?.stock || 0}</td>
+                                        <tr
+                                            key={product.id}
+                                            className="border-b border-sidebar-border/50 hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
+                                        >
+                                            <td className="p-4">
+                                                {product.name}
+                                            </td>
+                                            <td className="p-4 text-neutral-600 dark:text-neutral-400">
+                                                {product.sku}
+                                            </td>
+                                            <td className="p-4">
+                                                {product.category?.name ||
+                                                    'N/A'}
+                                            </td>
+                                            <td className="p-4">
+                                                {product.stock?.stock || 0}
+                                            </td>
                                             <td className="p-4">
                                                 <button
-                                                    onClick={() => handleEdit(product)}
+                                                    onClick={() =>
+                                                        handleEdit(product)
+                                                    }
                                                     className="rounded-lg border border-sidebar-border px-3 py-1 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
                                                 >
                                                     Edit
@@ -162,7 +184,10 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-neutral-500">
+                                        <td
+                                            colSpan={5}
+                                            className="p-8 text-center text-neutral-500"
+                                        >
                                             No products found
                                         </td>
                                     </tr>
@@ -171,49 +196,73 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                         </table>
                     </div>
                 </div>
-
             </div>
 
             {/* Edit Modal */}
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeModal}>
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                    onClick={closeModal}
+                >
                     <div
-                        className="relative w-full max-w-md rounded-xl border border-sidebar-border bg-white dark:bg-neutral-900 p-6"
+                        className="relative w-full max-w-md rounded-xl border border-sidebar-border bg-white p-6 dark:bg-neutral-900"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-xl font-semibold mb-4">Edit Product</h2>
+                        <h2 className="mb-4 text-xl font-semibold">
+                            Edit Product
+                        </h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium mb-1">Product Name</label>
+                                <label className="mb-1 block text-sm font-medium">
+                                    Product Name
+                                </label>
                                 <input
                                     type="text"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     className="w-full rounded-lg border p-2"
                                 />
-                                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             {/* SKU */}
                             <div>
-                                <label className="block text-sm font-medium mb-1">SKU</label>
+                                <label className="mb-1 block text-sm font-medium">
+                                    SKU
+                                </label>
                                 <input
                                     type="text"
                                     value={data.sku}
-                                    onChange={(e) => setData('sku', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('sku', e.target.value)
+                                    }
                                     className="w-full rounded-lg border p-2"
                                 />
-                                {errors.sku && <p className="text-red-500 text-sm mt-1">{errors.sku}</p>}
+                                {errors.sku && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.sku}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Category */}
                             <div>
-                                <label className="block text-sm font-medium mb-1">Category</label>
+                                <label className="mb-1 block text-sm font-medium">
+                                    Category
+                                </label>
                                 <select
                                     value={data.category_id}
-                                    onChange={(e) => setData('category_id', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('category_id', e.target.value)
+                                    }
                                     className="w-full rounded-lg border p-2"
                                 >
                                     <option value="">Select category</option>
@@ -223,15 +272,19 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                                         </option>
                                     ))}
                                 </select>
-                                {errors.category_id && <p className="text-red-500 text-sm mt-1">{errors.category_id}</p>}
+                                {errors.category_id && (
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.category_id}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Buttons */}
-                            <div className="flex gap-3 justify-between pt-4">
+                            <div className="flex justify-between gap-3 pt-4">
                                 <button
                                     type="button"
                                     onClick={handleDelete}
-                                    className="rounded-lg border border-red-500 text-red-500 px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-900/20"
+                                    className="rounded-lg border border-red-500 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                                 >
                                     Delete
                                 </button>
@@ -247,9 +300,11 @@ export default function Products({ products = [], categories = [] }: ProductsPro
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black px-4 py-2 text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50"
+                                        className="rounded-lg bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-800 disabled:opacity-50 dark:bg-neutral-100 dark:text-black dark:hover:bg-neutral-200"
                                     >
-                                        {processing ? 'Saving...' : 'Save Changes'}
+                                        {processing
+                                            ? 'Saving...'
+                                            : 'Save Changes'}
                                     </button>
                                 </div>
                             </div>

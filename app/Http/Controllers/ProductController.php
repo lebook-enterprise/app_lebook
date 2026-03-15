@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -19,7 +19,6 @@ class ProductController extends Controller
 
     /**
      * Store a new product in the system
-     * @param \Illuminate\Http\Request $request
      */
     public function store(Request $request)
     {
@@ -39,7 +38,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|unique:products,sku,' . $product->id,
+            'sku' => 'required|string|unique:products,sku,'.$product->id,
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -51,6 +50,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
         return redirect()->back();
     }
 }

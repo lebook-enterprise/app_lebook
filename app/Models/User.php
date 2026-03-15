@@ -3,15 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use App\Models\Role;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
@@ -57,7 +57,7 @@ class User extends Authenticatable
         parent::boot();
 
         static::creating(function ($user) {
-            if (!$user->role_id) {
+            if (! $user->role_id) {
                 $defaultRole = Role::firstOrCreate(['name' => 'user']);
                 $user->role_id = $defaultRole->id;
             }
