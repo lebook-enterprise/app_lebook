@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import typescript from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -11,12 +12,16 @@ export default [
     reactHooks.configs.flat.recommended,
     ...typescript.configs.recommended,
     {
+        files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         ...react.configs.flat.recommended,
-        ...react.configs.flat['jsx-runtime'], // Required for React 17+
+        ...react.configs.flat['jsx-runtime'],
         languageOptions: {
             globals: {
                 ...globals.browser,
             },
+        },
+        plugins: {
+            import: importPlugin,
         },
         rules: {
             'react/react-in-jsx-scope': 'off',
@@ -27,10 +32,16 @@ export default [
             react: {
                 version: 'detect',
             },
+            'import/resolver': {
+                typescript: {
+                    alwaysTryTypes: true,
+                    project: './tsconfig.json',
+                },
+            },
         },
     },
     {
         ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
     },
-    prettier, // Turn off all rules that might conflict with Prettier
+    prettier,
 ];
