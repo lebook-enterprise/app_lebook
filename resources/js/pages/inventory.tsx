@@ -81,6 +81,8 @@ export default function Inventory({
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    // ── History state ───────────────────────────────────────────────────────
+
     const [historySearch, setHistorySearch] = useState('');
     const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
     const historyDropdownRef = useRef<HTMLDivElement | null>(null);
