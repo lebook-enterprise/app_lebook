@@ -88,7 +88,7 @@ export default function Inventory({
     const historyDropdownRef = useRef<HTMLDivElement | null>(null);
     const historyInputRef = useRef<HTMLInputElement | null>(null);
 
-    const [lowStockThreshold, setLowStockThreshold] = useState(0);
+    const [lowStockThreshold, setLowStockThreshold] = useState(50);
 
     // ── Derived state: stats calculation ──────────────────────────────────
 
