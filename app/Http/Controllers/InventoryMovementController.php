@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\InventoryMovement;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,15 +17,32 @@ class InventoryMovementController extends Controller
      */
     public function index(): Response
     {
+        $inventoryMovements = InventoryMovement::with(['user', 'product.stock'])
+            ->orderBy('created_at', 'desc')
+            ->limit(6) // or paginate
+            ->get();
+
         return Inertia::render('inventory', [
             'products' => Product::select('id', 'name', 'sku', 'category_id')->get(),
             'categories' => Category::select('id', 'name')->get(),
+            'inventoryMovements' => $inventoryMovements,
+            'stats' => [
+                'total_skus'      => \App\Models\Product::count(),
+                'in_stock'        => \App\Models\ProductStock::sum('stock'),
+                'checked_out_today' => \App\Models\InventoryMovement::whereDate('created_at', today())
+                    ->where('type', 'out')
+                    ->sum('quantity'),
+                'low_stock'       => \App\Models\ProductStock::where('stock', '<=', 10)->count(),
+            ],
         ]);
     }
     /**
      * Handle check-in (add stock)
+     *
+     * @parma Request $request
+     * @return RedirectResponse
      */
-    public function checkIn(Request $request)
+    public function checkIn(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'name' => 'required|string',
@@ -55,8 +74,11 @@ class InventoryMovementController extends Controller
 
     /**
      * Handle check-out (remove stock)
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function checkOut(Request $request)
+    public function checkOut(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'product_id' => 'required|exists:products,id',

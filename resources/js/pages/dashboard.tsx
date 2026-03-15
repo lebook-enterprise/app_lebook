@@ -42,16 +42,17 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ inventoryMovements = [], products = [] }: DashboardProps) {
-    // Search + UI state
+    // Search + Filter state
     const [search, setSearch] = useState('');
+    const [filterType, setFilterType] = useState<string>('all');
+    const [filterUser, setFilterUser] = useState<string>('all');
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
+
+    // UI state
     const [showDropdown, setShowDropdown] = useState(false);
-    const [suggestions, setSuggestions] = useState<ProductLite[]>([]);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
-
-    // Keep original movements and filtered movements in state so clearing search restores all
-    const [allMovements] = useState<InventoryMovement[]>(inventoryMovements);
-    const [filteredMovements, setFilteredMovements] = useState<InventoryMovement[]>(inventoryMovements);
 
     // Build product list: prefer `products` prop, otherwise dedupe from movements
     const productList = useMemo<ProductLite[]>(() => {
@@ -77,36 +78,67 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
         return Array.from(map.values());
     }, [products, inventoryMovements]);
 
-    // Filter table when search changes
-    useEffect(() => {
+    // Build user list for filter
+    const userList = useMemo<string[]>(() => {
+        const users = new Set<string>();
+        for (const m of inventoryMovements) {
+            if (m.user?.name) users.add(m.user.name);
+        }
+        return Array.from(users).sort();
+    }, [inventoryMovements]);
+
+    // Filter table (Derived State)
+    const filteredMovements = useMemo(() => {
         const term = search.trim().toLowerCase();
-        if (term === '') {
-            setFilteredMovements(allMovements);
-            return;
+        let result = inventoryMovements;
+
+        // 1. Text Search
+        if (term !== '') {
+            result = result.filter(movement =>
+                (movement.product?.name || '').toLowerCase().includes(term) ||
+                (movement.product?.sku || '').toLowerCase().includes(term) ||
+                (movement.user?.name || '').toLowerCase().includes(term)
+            );
         }
 
-        const result = allMovements.filter(movement =>
-            (movement.product?.name || '').toLowerCase().includes(term) ||
-            (movement.product?.sku || '').toLowerCase().includes(term) ||
-            (movement.user?.name || '').toLowerCase().includes(term)
-        );
+        // 2. Type Filter
+        if (filterType !== 'all') {
+            result = result.filter(m => m.type === filterType);
+        }
 
-        setFilteredMovements(result);
-    }, [search, allMovements]);
+        // 3. User Filter
+        if (filterUser !== 'all') {
+            result = result.filter(m => m.user?.name === filterUser);
+        }
 
-    useEffect(() => {
+        // 4. Date Range
+        if (startDate) {
+            const start = new Date(startDate);
+            // set to beginning of day in local time
+            start.setHours(0, 0, 0, 0);
+            result = result.filter(m => new Date(m.created_at) >= start);
+        }
+        if (endDate) {
+            const end = new Date(endDate);
+            // set to end of day in local time
+            end.setHours(23, 59, 59, 999);
+            result = result.filter(m => new Date(m.created_at) <= end);
+        }
+
+        return result;
+    }, [search, filterType, filterUser, startDate, endDate, inventoryMovements]);
+
+    // Suggestions for search (Derived State)
+    const suggestions = useMemo(() => {
         const term = search.trim();
         if (term === '') {
-            setSuggestions(productList.slice(0, 100));
-            return;
+            return productList.slice(0, 100);
         }
 
-        const filtered = productList.filter(p =>
+        return productList.filter(p =>
             p.name.toLowerCase().includes(term.toLowerCase()) ||
             p.sku.toLowerCase().includes(term.toLowerCase())
-        );
-
-        setSuggestions(filtered.slice(0, 100));
+        ).slice(0, 100);
     }, [search, productList]);
 
     // Close dropdown when clicking outside
@@ -139,7 +171,7 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
             case 'in':
                 return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200';
             case 'out':
-                return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+                return 'bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400';
             case 'adjustment':
                 return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
             default:
@@ -160,51 +192,128 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
 
     // Handlers
     const handleInputFocus = () => {
-        setSuggestions(productList.slice(0, 100));
         setShowDropdown(productList.length > 0);
     };
 
     const handleSelectSuggestion = (item: ProductLite) => {
         setSearch(`${item.sku}`);
         setShowDropdown(false);
-
-        // setTimeout(() => inputRef.current?.focus(), 0);
     };
+
+    const handleClearFilters = () => {
+        setSearch('');
+        setFilterType('all');
+        setFilterUser('all');
+        setStartDate('');
+        setEndDate('');
+    };
+
+    const hasActiveFilters = search !== '' || filterType !== 'all' || filterUser !== 'all' || startDate !== '' || endDate !== '';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
-                {/* Search Bar With Suggestions */}
-                <div className="relative overflow-visible rounded-xl border border-sidebar-border" ref={dropdownRef}>
-                    <input
-                        ref={inputRef}
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onFocus={handleInputFocus}
-                        type="text"
-                        className="w-full p-3 bg-transparent border-0 focus:outline-none focus:ring-0"
-                        placeholder="Search by product, SKU, or user..."
-                    />
+                {/* Filter Bar */}
+                <div className="rounded-xl border border-sidebar-border bg-white p-4 dark:bg-neutral-800/50">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12 items-end">
+                        
+                        {/* Search (Takes 4 cols on large) */}
+                        <div className="relative lg:col-span-4" ref={dropdownRef}>
+                            <label className="mb-1 block text-xs font-medium text-neutral-500">Search</label>
+                            <input
+                                ref={inputRef}
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onFocus={handleInputFocus}
+                                type="text"
+                                className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                                placeholder="Product, SKU, or User..."
+                            />
+                            {/* Dropdown */}
+                            {showDropdown && suggestions.length > 0 && (
+                                <div className="absolute left-0 top-full z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-sidebar-border bg-white shadow-lg dark:bg-neutral-800">
+                                    {suggestions.map((item) => (
+                                        <button
+                                            key={item.sku}
+                                            type="button"
+                                            onClick={() => handleSelectSuggestion(item)}
+                                            className="flex w-full flex-col px-4 py-2 text-left hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                                        >
+                                            <div className="flex justify-between">
+                                                <span className="font-medium">{item.name}</span>
+                                                <span className="text-xs text-neutral-500 dark:text-neutral-400">{item.sku}</span>
+                                            </div>
+                                            <span className="text-xs text-neutral-600 dark:text-neutral-400">SKU: {item.sku}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
 
-                    {/* Dropdown */}
-                    {showDropdown && suggestions.length > 0 && (
-                        <div className="absolute top-full left-0 w-full z-20 mt-1 bg-white dark:bg-neutral-800 border border-sidebar-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                            {suggestions.map((item) => (
-                                <button
-                                    key={item.sku}
-                                    type="button"
-                                    onClick={() => handleSelectSuggestion(item)}
-                                    className="w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700 flex flex-col"
-                                >
-                                    <div className="flex justify-between">
-                                        <span className="font-medium">{item.name}</span>
-                                        <span className="text-xs text-neutral-500 dark:text-neutral-400">{item.sku}</span>
-                                    </div>
-                                    <span className="text-xs text-neutral-600 dark:text-neutral-400">SKU: {item.sku}</span>
-                                </button>
-                            ))}
+                        {/* Type Filter (2 cols) */}
+                        <div className="lg:col-span-2">
+                            <label className="mb-1 block text-xs font-medium text-neutral-500">Type</label>
+                            <select 
+                                className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                                value={filterType}
+                                onChange={(e) => setFilterType(e.target.value)}
+                            >
+                                <option value="all">All Types</option>
+                                <option value="in">Stock In</option>
+                                <option value="out">Stock Out</option>
+                                <option value="adjustment">Adjustment</option>
+                            </select>
+                        </div>
+
+                        {/* User Filter (2 cols) */}
+                        <div className="lg:col-span-2">
+                            <label className="mb-1 block text-xs font-medium text-neutral-500">User</label>
+                            <select 
+                                className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                                value={filterUser}
+                                onChange={(e) => setFilterUser(e.target.value)}
+                            >
+                                <option value="all">All Users</option>
+                                {userList.map(u => (
+                                    <option key={u} value={u}>{u}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Date Range (Start) (2 cols) */}
+                        <div className="lg:col-span-2">
+                             <label className="mb-1 block text-xs font-medium text-neutral-500">From</label>
+                            <input 
+                                type="date" 
+                                className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Date Range (End) (2 cols) */}
+                        <div className="lg:col-span-2">
+                             <label className="mb-1 block text-xs font-medium text-neutral-500">To</label>
+                            <input 
+                                type="date" 
+                                className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Active Filters / Clear Button Row */}
+                    {hasActiveFilters && (
+                        <div className="mt-3 flex justify-end">
+                            <button
+                                onClick={handleClearFilters}
+                                className="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 underline decoration-dashed underline-offset-4"
+                            >
+                                Clear all filters
+                            </button>
                         </div>
                     )}
                 </div>
@@ -249,7 +358,10 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
                                                 {movement.product.sku}
                                             </td>
                                             <td className="p-4">
-                                                <span className="inline-block px-3 py-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 font-semibold">
+                                                <span className={`inline-block rounded-md px-2.5 py-1 text-sm font-semibold ${(movement.product.stock?.stock ?? 0) <= 10
+                                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200'
+                                                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200'
+                                                    }`}>
                                                     {movement.product.stock?.stock ?? 0}
                                                 </span>
                                             </td>
@@ -259,7 +371,7 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <span className={movement.type === 'in' ? 'text-green-600 dark:text-green-400 font-semibold' : movement.type === 'out' ? 'text-red-600 dark:text-red-400 font-semibold' : ''}>
+                                                <span className={movement.type === 'in' ? 'text-green-600 dark:text-green-400 font-semibold' : movement.type === 'out' ? 'text-amber-600 dark:text-amber-400 font-semibold' : ''}>
                                                     {movement.type === 'in' ? '+' : movement.type === 'out' ? '-' : ''}{movement.quantity}
                                                 </span>
                                             </td>
@@ -274,7 +386,7 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
                                 ) : (
                                     <tr>
                                         <td colSpan={8} className="p-8 text-center text-neutral-500">
-                                            {search ? 'No movements found matching your search' : 'No inventory movements yet'}
+                                            {hasActiveFilters ? 'No movements found matching your filters' : 'No inventory movements yet'}
                                         </td>
                                     </tr>
                                 )}

@@ -16,6 +16,11 @@ class ProductController extends Controller
             'categories' => Category::all(),
         ]);
     }
+
+    /**
+     * Store a new product in the system
+     * @param \Illuminate\Http\Request $request
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
