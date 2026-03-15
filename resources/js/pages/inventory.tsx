@@ -4,6 +4,7 @@ import { inventory } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
+// TODO: improve UI (buttons and stuff)
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
