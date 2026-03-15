@@ -94,11 +94,29 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Check Formatting
-        run: npm run format:check
+      - name: Run Formatting
+        run: npm run format
 
       - name: Lint Frontend
         run: npm run lint
 
       - name: Type Check
         run: npm run types
+
+      - run: npm ci
+
+      # Auto-format instead of just checking
+      - name: Auto-format code
+        run: npm run format  # prettier --write
+
+      # Commit and push if there are changes
+      - name: Push formatting fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "style: auto-format with prettier"
+            git push
+          fi
+
