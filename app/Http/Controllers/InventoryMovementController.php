@@ -23,9 +23,10 @@ class InventoryMovementController extends Controller
             ->limit(6) // or paginate
             ->get();
 
-        return Inertia::render('inventory', [
-            'products' => Product::select('id', 'name', 'sku', 'category_id')->get(),
+        return Inertia.render('inventory', [
+            'products' => Product::with('stock')->select('id', 'name', 'sku', 'category_id')->get(),
             'categories' => Category::select('id', 'name')->get(),
+
             'inventoryMovements' => $inventoryMovements,
             'stats' => [
                 'total_skus' => Product::count(),

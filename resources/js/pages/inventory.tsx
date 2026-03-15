@@ -18,6 +18,9 @@ interface Product {
     name: string;
     sku: string;
     category_id?: number;
+    stock?: {
+        stock: number;
+    };
 }
 
 interface InventoryMovement {
@@ -85,7 +88,17 @@ export default function Inventory({
     const historyDropdownRef = useRef<HTMLDivElement | null>(null);
     const historyInputRef = useRef<HTMLInputElement | null>(null);
 
-    // ── Check In Form ────────────────────────────────────────────────────────
+    const [lowStockThreshold, setLowStockThreshold] = useState(5);
+
+    // ── Derived state: stats calculation ──────────────────────────────────
+
+    const lowStockCount = useMemo(() => {
+        return products.filter((p) => (p.stock?.stock ?? 0) <= lowStockThreshold)
+            .length;
+    }, [products, lowStockThreshold]);
+
+    // ── Derived state: form product search ──────────────────────────────────
+
 
     const {
         data: inData,
@@ -365,11 +378,29 @@ export default function Inventory({
                         <p className="mt-1 text-xs text-amber-500">↑ today</p>
                     </div>
                     <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
-                        <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase dark:text-neutral-400">
-                            Low Stock
-                        </p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase dark:text-neutral-400">
+                                Low Stock
+                            </p>
+                            <div className="flex items-center gap-1">
+                                <span className="text-[10px] text-neutral-400">T:</span>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    max={100}
+                                    value={lowStockThreshold}
+                                    onChange={(e) =>
+                                        setLowStockThreshold(
+                                            parseInt(e.target.value) || 0,
+                                        )
+                                    }
+                                    className="w-8 border-none bg-transparent p-0 text-[10px] font-bold text-neutral-500 focus:outline-none focus:ring-0"
+                                    title="Edit low stock threshold"
+                                />
+                            </div>
+                        </div>
                         <p className="mt-1 text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-                            {stats.low_stock.toLocaleString()}
+                            {lowStockCount.toLocaleString()}
                         </p>
                         <p className="mt-1 text-xs text-red-500">
                             below threshold
@@ -761,7 +792,8 @@ export default function Inventory({
                                                 <span
                                                     className={`inline-block rounded-md px-2.5 py-1 text-sm font-semibold ${
                                                         (movement.product.stock
-                                                            ?.stock ?? 0) <= 10
+                                                            ?.stock ?? 0) <=
+                                                        lowStockThreshold
                                                             ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200'
                                                             : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200'
                                                     }`}
