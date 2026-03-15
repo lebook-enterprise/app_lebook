@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryMovement;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -16,7 +15,7 @@ class DashboardController extends Controller
             ->get();
 
         return Inertia::render('dashboard', [
-            'inventoryMovements' => $inventoryMovements
+            'inventoryMovements' => $inventoryMovements,
         ]);
     }
 }

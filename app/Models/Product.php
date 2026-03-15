@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class Product extends Model
 {
@@ -44,7 +45,7 @@ class Product extends Model
      * ID      -> incremental padded ID
      * UNIQUE  -> random 4 character string
      *
-     * @param \App\Models\Product $product
+     * @param  Product  $product
      * @return string
      */
     public static function generateSku($product)
@@ -60,7 +61,7 @@ class Product extends Model
     /**
      * Get the stock value of the product
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function stock()
     {
@@ -70,7 +71,7 @@ class Product extends Model
     /**
      * Get the movements of the product.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function movements()
     {
@@ -80,7 +81,7 @@ class Product extends Model
     /**
      * Get the category that the product belongs to
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function category()
     {
@@ -93,10 +94,8 @@ class Product extends Model
      * Creates a stock record if one does not exist, increments the quantity,
      * and logs the movement in the movements table.
      *
-     * @param int         $amount
-     * @param int|string  $userId
-     * @param int|null    $note
-     * @return void
+     * @param  int|string  $userId
+     * @param  int|null  $note
      */
     public function increaseStock(int $amount, $userId, $note = null): void
     {
@@ -124,10 +123,8 @@ class Product extends Model
      * needed cause it's being handled in the checkOut() at InventoryMovement
      * controller.
      *
-     * @param int         $amount
-     * @param int|string  $userId
-     * @param int|null    $note
-     * @return void
+     * @param  int|string  $userId
+     * @param  int|null  $note
      */
     public function decreaseStock(int $amount, $userId, $note = null): void
     {
