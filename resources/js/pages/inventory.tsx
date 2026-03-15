@@ -81,8 +81,6 @@ export default function Inventory({
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // ── History state ───────────────────────────────────────────────────────
-
     const [historySearch, setHistorySearch] = useState('');
     const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
     const historyDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -93,12 +91,12 @@ export default function Inventory({
     // ── Derived state: stats calculation ──────────────────────────────────
 
     const lowStockCount = useMemo(() => {
-        return products.filter((p) => (p.stock?.stock ?? 0) <= lowStockThreshold)
-            .length;
+        return products.filter(
+            (p) => (p.stock?.stock ?? 0) <= lowStockThreshold,
+        ).length;
     }, [products, lowStockThreshold]);
 
     // ── Derived state: form product search ──────────────────────────────────
-
 
     const {
         data: inData,
@@ -383,7 +381,9 @@ export default function Inventory({
                                 Low Stock
                             </p>
                             <div className="flex items-center gap-1">
-                                <span className="text-[10px] text-neutral-400">T:</span>
+                                <span className="text-[10px] text-neutral-400">
+                                    T:
+                                </span>
                                 <input
                                     type="number"
                                     min={0}
@@ -394,7 +394,7 @@ export default function Inventory({
                                             parseInt(e.target.value) || 0,
                                         )
                                     }
-                                    className="w-8 border-none bg-transparent p-0 text-[10px] font-bold text-neutral-500 focus:outline-none focus:ring-0"
+                                    className="w-8 border-none bg-transparent p-0 text-[10px] font-bold text-neutral-500 focus:ring-0 focus:outline-none"
                                     title="Edit low stock threshold"
                                 />
                             </div>
