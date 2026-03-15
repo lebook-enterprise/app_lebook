@@ -16,11 +16,6 @@ let urlDefaults: () => UrlDefaults = () => ({});
 
 export type RouteDefinition<TMethod extends Method | Method[]> = {
     url: string;
-    form?: (
-        options?: RouteQueryOptions,
-    ) => RouteFormDefinition<
-        TMethod extends Method[] ? TMethod[number] : TMethod
-    >;
 } & (TMethod extends Method[] ? { methods: TMethod } : { method: TMethod });
 
 export type RouteFormDefinition<TMethod extends Method> = {

@@ -4,9 +4,9 @@ import {
     type RouteQueryOptions,
 } from './../../wayfinder';
 /**
- * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:58
- * @route '/login'
+ * @see \App\Http\Controllers\ProductController::store
+ * @see app/Http/Controllers/ProductController.php:23
+ * @route '/products'
  */
 export const store = (
     options?: RouteQueryOptions,
@@ -17,30 +17,30 @@ export const store = (
 
 store.definition = {
     methods: ['post'],
-    url: '/login',
+    url: '/products',
 } satisfies RouteDefinition<['post']>;
 
 /**
- * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:58
- * @route '/login'
+ * @see \App\Http\Controllers\ProductController::store
+ * @see app/Http/Controllers/ProductController.php:23
+ * @route '/products'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options);
 };
 
 /**
- * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:58
- * @route '/login'
+ * @see \App\Http\Controllers\ProductController::store
+ * @see app/Http/Controllers/ProductController.php:23
+ * @route '/products'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 });
 
-const login = {
+const products = {
     store: Object.assign(store, store),
 };
 
-export default login;
+export default products;
