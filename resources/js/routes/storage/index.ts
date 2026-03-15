@@ -2,7 +2,6 @@ import {
     applyUrlDefaults,
     queryParams,
     type RouteDefinition,
-    type RouteFormDefinition,
     type RouteQueryOptions,
 } from './../../wayfinder';
 import localA91488 from './local';
@@ -77,49 +76,6 @@ local.head = (
     url: local.url(args, options),
     method: 'head',
 });
-
-/**
- * @see vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:98
- * @route '/storage/{path}'
- */
-const localForm = (
-    args: { path: string | number } | [path: string | number] | string | number,
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'get'> => ({
-    action: local.url(args, options),
-    method: 'get',
-});
-
-/**
- * @see vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:98
- * @route '/storage/{path}'
- */
-localForm.get = (
-    args: { path: string | number } | [path: string | number] | string | number,
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'get'> => ({
-    action: local.url(args, options),
-    method: 'get',
-});
-
-/**
- * @see vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:98
- * @route '/storage/{path}'
- */
-localForm.head = (
-    args: { path: string | number } | [path: string | number] | string | number,
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'get'> => ({
-    action: local.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        },
-    }),
-    method: 'get',
-});
-
-local.form = localForm;
 
 const storage = {
     local: Object.assign(local, localA91488),

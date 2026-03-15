@@ -1,7 +1,6 @@
 import {
     queryParams,
     type RouteDefinition,
-    type RouteFormDefinition,
     type RouteQueryOptions,
 } from './../../wayfinder';
 /**
@@ -41,32 +40,6 @@ checkin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 });
 
 /**
- * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:48
- * @route '/inventory/check-in'
- */
-const checkinForm = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: checkin.url(options),
-    method: 'post',
-});
-
-/**
- * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:48
- * @route '/inventory/check-in'
- */
-checkinForm.post = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: checkin.url(options),
-    method: 'post',
-});
-
-checkin.form = checkinForm;
-
-/**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
  * @see app/Http/Controllers/InventoryMovementController.php:81
  * @route '/inventory/check-out'
@@ -101,32 +74,6 @@ checkout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkout.url(options),
     method: 'post',
 });
-
-/**
- * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:81
- * @route '/inventory/check-out'
- */
-const checkoutForm = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: checkout.url(options),
-    method: 'post',
-});
-
-/**
- * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:81
- * @route '/inventory/check-out'
- */
-checkoutForm.post = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: checkout.url(options),
-    method: 'post',
-});
-
-checkout.form = checkoutForm;
 
 const inventory = {
     checkin: Object.assign(checkin, checkin),
