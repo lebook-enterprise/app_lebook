@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\InventoryMovement;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,9 +17,23 @@ class InventoryMovementController extends Controller
      */
     public function index(): Response
     {
+        $inventoryMovements = InventoryMovement::with(['user', 'product.stock'])
+            ->orderBy('created_at', 'desc')
+            ->limit(6) // or paginate
+            ->get();
+
         return Inertia::render('inventory', [
             'products' => Product::select('id', 'name', 'sku', 'category_id')->get(),
             'categories' => Category::select('id', 'name')->get(),
+            'inventoryMovements' => $inventoryMovements,
+            'stats' => [
+                'total_skus'      => \App\Models\Product::count(),
+                'in_stock'        => \App\Models\ProductStock::sum('stock'),
+                'checked_out_today' => \App\Models\InventoryMovement::whereDate('created_at', today())
+                    ->where('type', 'out')
+                    ->sum('quantity'),
+                'low_stock'       => \App\Models\ProductStock::where('stock', '<=', 10)->count(),
+            ],
         ]);
     }
     /**

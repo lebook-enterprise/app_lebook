@@ -139,7 +139,7 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
             case 'in':
                 return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200';
             case 'out':
-                return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+                return 'bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400';
             case 'adjustment':
                 return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
             default:
@@ -249,7 +249,10 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
                                                 {movement.product.sku}
                                             </td>
                                             <td className="p-4">
-                                                <span className="inline-block px-3 py-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 font-semibold">
+                                                <span className={`inline-block rounded-md px-2.5 py-1 text-sm font-semibold ${(movement.product.stock?.stock ?? 0) <= 10
+                                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200'
+                                                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-200'
+                                                    }`}>
                                                     {movement.product.stock?.stock ?? 0}
                                                 </span>
                                             </td>
@@ -259,7 +262,7 @@ export default function Dashboard({ inventoryMovements = [], products = [] }: Da
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <span className={movement.type === 'in' ? 'text-green-600 dark:text-green-400 font-semibold' : movement.type === 'out' ? 'text-red-600 dark:text-red-400 font-semibold' : ''}>
+                                                <span className={movement.type === 'in' ? 'text-green-600 dark:text-green-400 font-semibold' : movement.type === 'out' ? 'text-amber-600 dark:text-amber-400 font-semibold' : ''}>
                                                     {movement.type === 'in' ? '+' : movement.type === 'out' ? '-' : ''}{movement.quantity}
                                                 </span>
                                             </td>
