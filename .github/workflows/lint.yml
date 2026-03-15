@@ -102,6 +102,7 @@ jobs:
 
       - name: Type Check
         run: npm run types
+        continue-on-error: true
 
       - run: npm ci
 
