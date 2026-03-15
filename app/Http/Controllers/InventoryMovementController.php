@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Inertia\Inertia;
 use Inertia\Response;
+use PhpParser\Node\Stmt\TryCatch;
 
 class InventoryMovementController extends Controller
 {

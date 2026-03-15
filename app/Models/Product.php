@@ -21,7 +21,7 @@ class Product extends Model
         static::creating(
             function ($product) {
                 if (empty($product->sku)) {
-                    $product->sku = self::generateSku($product);
+                    $product->sku = static::generateSku($product);
                 }
             }
         );
@@ -31,6 +31,22 @@ class Product extends Model
         });
     }
 
+    /**
+     * Generate a unique SKU for a product.
+     *
+     * The SKU format is:
+     * PREFIX-ID-UNIQUE
+     *
+     * Example:
+     * PRO-000123-ABCD
+     *
+     * PREFIX  -> first 3 characters of the product name
+     * ID      -> incremental padded ID
+     * UNIQUE  -> random 4 character string
+     *
+     * @param \App\Models\Product $product
+     * @return string
+     */
     public static function generateSku($product)
     {
         $prefix = strtoupper(substr($product->name, 0, 3));
@@ -41,22 +57,48 @@ class Product extends Model
         return "$prefix-$idPart-$unique";
     }
 
+    /**
+     * Get the stock value of the product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function stock()
     {
         return $this->hasOne(ProductStock::class);
     }
 
+    /**
+     * Get the movements of the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function movements()
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
+    /**
+     * Get the category that the product belongs to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function increaseStock(int $amount, $userId, $note = null)
+    /**
+     * Increase the stock quantity for this product.
+     *
+     * Creates a stock record if one does not exist, increments the quantity,
+     * and logs the movement in the movements table.
+     *
+     * @param int         $amount
+     * @param int|string  $userId
+     * @param int|null    $note
+     * @return void
+     */
+    public function increaseStock(int $amount, $userId, $note = null): void
     {
         $stock = $this->stock()->firstOrCreate(
             ['product_id' => $this->id],
@@ -74,7 +116,20 @@ class Product extends Model
         ]);
     }
 
-    public function decreaseStock(int $amount, $userId, $note = null)
+    /**
+     * Decreases the stock quantity for this product.
+     *
+     * Creates a stock record if one does not exist, decreases the quantity,
+     * and logs the movement in the movements table. the exception is not
+     * needed cause it's being handled in the checkOut() at InventoryMovement
+     * controller.
+     *
+     * @param int         $amount
+     * @param int|string  $userId
+     * @param int|null    $note
+     * @return void
+     */
+    public function decreaseStock(int $amount, $userId, $note = null): void
     {
         $stock = $this->stock()->firstOrCreate(
             ['product_id' => $this->id],
