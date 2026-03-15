@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Product;
 use App\Models\Category;
 use Inertia\Inertia;
 use Inertia\Response;
-use PhpParser\Node\Stmt\TryCatch;
 
 class InventoryMovementController extends Controller
 {
@@ -23,8 +23,11 @@ class InventoryMovementController extends Controller
     }
     /**
      * Handle check-in (add stock)
+     *
+     * @parma Request $request
+     * @return RedirectResponse
      */
-    public function checkIn(Request $request)
+    public function checkIn(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'name' => 'required|string',
@@ -56,8 +59,11 @@ class InventoryMovementController extends Controller
 
     /**
      * Handle check-out (remove stock)
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function checkOut(Request $request)
+    public function checkOut(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'product_id' => 'required|exists:products,id',
