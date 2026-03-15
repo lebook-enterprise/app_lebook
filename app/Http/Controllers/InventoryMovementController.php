@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class InventoryMovementController extends Controller
@@ -22,8 +23,9 @@ class InventoryMovementController extends Controller
             ->limit(6) // or paginate
             ->get();
 
-        return Inertia.render('inventory', [
+        return Inertia::render('inventory', [
             'products' => Product::with('stock')->select('id', 'name', 'sku', 'category_id')->get(),
+
             'categories' => Category::select('id', 'name')->get(),
 
             'inventoryMovements' => $inventoryMovements,
