@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class InventoryMovementController extends Controller
