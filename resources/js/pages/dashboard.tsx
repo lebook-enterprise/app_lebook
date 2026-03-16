@@ -295,6 +295,9 @@ export default function Dashboard({
                             <label className="mb-1 block text-xs font-medium text-neutral-500">
                                 Type
                             </label>
+                            <span className="mb-1 block text-[10px] text-neutral-400">
+                                Filter by movement type
+                            </span>
                             <select
                                 className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:ring-2 focus:ring-neutral-900 focus:outline-none dark:focus:ring-neutral-100"
                                 value={filterType}
@@ -312,6 +315,9 @@ export default function Dashboard({
                             <label className="mb-1 block text-xs font-medium text-neutral-500">
                                 User
                             </label>
+                            <span className="mb-1 block text-[10px] text-neutral-400">
+                                Filter by user
+                            </span>
                             <select
                                 className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:ring-2 focus:ring-neutral-900 focus:outline-none dark:focus:ring-neutral-100"
                                 value={filterUser}
@@ -331,6 +337,9 @@ export default function Dashboard({
                             <label className="mb-1 block text-xs font-medium text-neutral-500">
                                 From
                             </label>
+                            <span className="mb-1 block text-[10px] text-neutral-400">
+                                Start date
+                            </span>
                             <input
                                 type="date"
                                 className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:ring-2 focus:ring-neutral-900 focus:outline-none dark:focus:ring-neutral-100"
@@ -344,6 +353,9 @@ export default function Dashboard({
                             <label className="mb-1 block text-xs font-medium text-neutral-500">
                                 To
                             </label>
+                            <span className="mb-1 block text-[10px] text-neutral-400">
+                                End date
+                            </span>
                             <input
                                 type="date"
                                 className="w-full rounded-lg border border-sidebar-border bg-transparent p-2.5 text-sm focus:ring-2 focus:ring-neutral-900 focus:outline-none dark:focus:ring-neutral-100"
