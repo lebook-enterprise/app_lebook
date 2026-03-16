@@ -40,11 +40,6 @@ class InventoryMovementController extends Controller
         ]);
     }
 
-    /**
-     * Handle check-in (add stock)
-     *
-     * @parma Request $request
-     */
     public function checkIn(Request $request): RedirectResponse
     {
         $data = $request->validate([
