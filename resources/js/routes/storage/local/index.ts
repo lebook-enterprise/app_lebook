@@ -2,6 +2,7 @@ import {
     applyUrlDefaults,
     queryParams,
     type RouteDefinition,
+    type RouteFormDefinition,
     type RouteQueryOptions,
 } from './../../../wayfinder';
 /**
@@ -63,6 +64,42 @@ upload.put = (
     url: upload.url(args, options),
     method: 'put',
 });
+
+/**
+ * @see vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:106
+ * @route '/storage/{path}'
+ */
+const uploadForm = (
+    args: { path: string | number } | [path: string | number] | string | number,
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: upload.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+/**
+ * @see vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:106
+ * @route '/storage/{path}'
+ */
+uploadForm.put = (
+    args: { path: string | number } | [path: string | number] | string | number,
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: upload.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+upload.form = uploadForm;
 
 const local = {
     upload: Object.assign(upload, upload),
