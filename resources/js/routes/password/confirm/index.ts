@@ -1,7 +1,6 @@
 import {
     queryParams,
     type RouteDefinition,
-    type RouteFormDefinition,
     type RouteQueryOptions,
 } from './../../../wayfinder';
 /**
@@ -39,32 +38,6 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 });
-
-/**
- * @see \Laravel\Fortify\Http\Controllers\ConfirmablePasswordController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/ConfirmablePasswordController.php:51
- * @route '/user/confirm-password'
- */
-const storeForm = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-});
-
-/**
- * @see \Laravel\Fortify\Http\Controllers\ConfirmablePasswordController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/ConfirmablePasswordController.php:51
- * @route '/user/confirm-password'
- */
-storeForm.post = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-});
-
-store.form = storeForm;
 
 const confirm = {
     store: Object.assign(store, store),
