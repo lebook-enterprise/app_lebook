@@ -40,7 +40,6 @@ auth.json
 /public/hot
 /public/storage
 /resources/js/actions
-/resources/js/
 /storage/*.key
 /storage/pail
 /vendor
