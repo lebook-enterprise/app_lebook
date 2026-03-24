@@ -2,6 +2,7 @@ import {
     applyUrlDefaults,
     queryParams,
     type RouteDefinition,
+    type RouteFormDefinition,
     type RouteQueryOptions,
 } from './../../wayfinder';
 /**
@@ -41,17 +42,42 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 });
 
 /**
+ * @see \App\Http\Controllers\CategoryController::store
+ * @see app/Http/Controllers/CategoryController.php:24
+ * @route '/categories'
+ */
+const storeForm = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+});
+
+/**
+ * @see \App\Http\Controllers\CategoryController::store
+ * @see app/Http/Controllers/CategoryController.php:24
+ * @route '/categories'
+ */
+storeForm.post = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+});
+
+store.form = storeForm;
+
+/**
  * @see \App\Http\Controllers\CategoryController::update
  * @see app/Http/Controllers/CategoryController.php:39
  * @route '/categories/{category}'
  */
 export const update = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -70,11 +96,10 @@ update.definition = {
  */
 update.url = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -114,16 +139,61 @@ update.url = (
  */
 update.put = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 });
+
+/**
+ * @see \App\Http\Controllers\CategoryController::update
+ * @see app/Http/Controllers/CategoryController.php:39
+ * @route '/categories/{category}'
+ */
+const updateForm = (
+    args:
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
+        | number
+        | { id: number },
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+/**
+ * @see \App\Http\Controllers\CategoryController::update
+ * @see app/Http/Controllers/CategoryController.php:39
+ * @route '/categories/{category}'
+ */
+updateForm.put = (
+    args:
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
+        | number
+        | { id: number },
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+update.form = updateForm;
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
@@ -132,11 +202,10 @@ update.put = (
  */
 export const destroy = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -155,11 +224,10 @@ destroy.definition = {
  */
 destroy.url = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -199,16 +267,61 @@ destroy.url = (
  */
 destroy.delete = (
     args:
-        | { category: string | number | { id: string | number } }
-        | [category: string | number | { id: string | number }]
-        | string
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
         | number
-        | { id: string | number },
+        | { id: number },
     options?: RouteQueryOptions,
 ): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 });
+
+/**
+ * @see \App\Http\Controllers\CategoryController::destroy
+ * @see app/Http/Controllers/CategoryController.php:54
+ * @route '/categories/{category}'
+ */
+const destroyForm = (
+    args:
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
+        | number
+        | { id: number },
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+/**
+ * @see \App\Http\Controllers\CategoryController::destroy
+ * @see app/Http/Controllers/CategoryController.php:54
+ * @route '/categories/{category}'
+ */
+destroyForm.delete = (
+    args:
+        | { category: number | { id: number } }
+        | [category: number | { id: number }]
+        | number
+        | { id: number },
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'post',
+});
+
+destroy.form = destroyForm;
 
 const categories = {
     store: Object.assign(store, store),
