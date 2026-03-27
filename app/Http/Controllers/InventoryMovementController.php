@@ -64,7 +64,7 @@ class InventoryMovementController extends Controller
         $product->increaseStock(
             amount: $data['quantity'],
             userId: auth()->id(),
-            note: $data['note']
+            note: $data['note'] ?? null
         );
 
         return redirect()->back()->with('success', 'Stock added successfully.');
@@ -101,7 +101,7 @@ class InventoryMovementController extends Controller
         $product->decreaseStock(
             amount: $data['quantity'],
             userId: auth()->id(),
-            note: $data['note']
+            note: $data['note'] ?? null
         );
 
         return redirect()->back()->with('success', 'Stock removed successfully.');
