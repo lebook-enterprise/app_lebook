@@ -1,0 +1,58 @@
+{
+    "agents": [
+        {
+            "name": "coder",
+            "description": "Writes and modifies code",
+            "model": "ollama/kimi-k2.5:cloud",
+            "cwd": "..",
+            "system_prompt": "You are a senior software engineer. Write clean, efficient, production-ready code. Follow project conventions strictly.",
+            "tools": [
+                {
+                    "type": "filesystem",
+                    "config": {
+                        "root": "..",
+                        "read_only": false
+                    }
+                }
+            ]
+        },
+        {
+            "name": "lead",
+            "model": "ollama/kimi-k2.5:cloud",
+            "cwd": "..",
+            "system_prompt": "You break down tasks into steps and assign them to coder, reviewer, and tester."
+        },
+        {
+            "name": "reviewer",
+            "description": "Reviews and improves code quality",
+            "model": "ollama/kimi-k2.5:cloud",
+            "cwd": "..",
+            "system_prompt": "You review code for clarity, performance, maintainability, and best practices. Be critical and precise.",
+            "tools": [
+                {
+                    "type": "filesystem",
+                    "config": {
+                        "root": "..",
+                        "read_only": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "tester",
+            "description": "Creates and validates tests",
+            "model": "ollama/kimi-k2.5:cloud",
+            "cwd": "..",
+            "system_prompt": "You write unit tests, integration tests, and edge case validations. Focus on correctness and coverage.",
+            "tools": [
+                {
+                    "type": "filesystem",
+                    "config": {
+                        "root": "..",
+                        "read_only": false
+                    }
+                }
+            ]
+        }
+    ]
+}
