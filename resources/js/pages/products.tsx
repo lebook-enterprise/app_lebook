@@ -43,7 +43,7 @@ export default function Products({
     categories = [],
 }: ProductsProps) {
     const { auth } = usePage<SharedData>().props;
-    const isAdmin = auth.user.role_id === 2;
+    const isAdmin = auth.user.is_organization_admin || auth.user.is_super_admin;
 
     const [view, setView] = useState<'products' | 'categories'>('products');
     const [search, setSearch] = useState('');

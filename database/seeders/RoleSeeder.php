@@ -3,19 +3,14 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
-/* use Illuminate\Database\Console\Seeds\WithoutModelEvents; */
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // the user role is created at signUp
-        Role::firstOrCreate(
-            ['name' => 'admin'],
-        );
+        Role::firstOrCreate(['name' => 'user']);
+        Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'super_admin']);
     }
 }

@@ -7,7 +7,7 @@ import {
 } from './../../wayfinder';
 /**
  * @see \App\Http\Controllers\CategoryController::store
- * @see app/Http/Controllers/CategoryController.php:24
+ * @see app/Http/Controllers/CategoryController.php:28
  * @route '/categories'
  */
 export const store = (
@@ -24,7 +24,7 @@ store.definition = {
 
 /**
  * @see \App\Http\Controllers\CategoryController::store
- * @see app/Http/Controllers/CategoryController.php:24
+ * @see app/Http/Controllers/CategoryController.php:28
  * @route '/categories'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -33,7 +33,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\CategoryController::store
- * @see app/Http/Controllers/CategoryController.php:24
+ * @see app/Http/Controllers/CategoryController.php:28
  * @route '/categories'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -43,7 +43,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
  * @see \App\Http\Controllers\CategoryController::store
- * @see app/Http/Controllers/CategoryController.php:24
+ * @see app/Http/Controllers/CategoryController.php:28
  * @route '/categories'
  */
 const storeForm = (
@@ -55,7 +55,7 @@ const storeForm = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::store
- * @see app/Http/Controllers/CategoryController.php:24
+ * @see app/Http/Controllers/CategoryController.php:28
  * @route '/categories'
  */
 storeForm.post = (
@@ -69,7 +69,7 @@ store.form = storeForm;
 
 /**
  * @see \App\Http\Controllers\CategoryController::update
- * @see app/Http/Controllers/CategoryController.php:39
+ * @see app/Http/Controllers/CategoryController.php:44
  * @route '/categories/{category}'
  */
 export const update = (
@@ -91,7 +91,7 @@ update.definition = {
 
 /**
  * @see \App\Http\Controllers\CategoryController::update
- * @see app/Http/Controllers/CategoryController.php:39
+ * @see app/Http/Controllers/CategoryController.php:44
  * @route '/categories/{category}'
  */
 update.url = (
@@ -134,7 +134,7 @@ update.url = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::update
- * @see app/Http/Controllers/CategoryController.php:39
+ * @see app/Http/Controllers/CategoryController.php:44
  * @route '/categories/{category}'
  */
 update.put = (
@@ -151,7 +151,7 @@ update.put = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::update
- * @see app/Http/Controllers/CategoryController.php:39
+ * @see app/Http/Controllers/CategoryController.php:44
  * @route '/categories/{category}'
  */
 const updateForm = (
@@ -173,7 +173,7 @@ const updateForm = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::update
- * @see app/Http/Controllers/CategoryController.php:39
+ * @see app/Http/Controllers/CategoryController.php:44
  * @route '/categories/{category}'
  */
 updateForm.put = (
@@ -197,7 +197,7 @@ update.form = updateForm;
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
- * @see app/Http/Controllers/CategoryController.php:54
+ * @see app/Http/Controllers/CategoryController.php:62
  * @route '/categories/{category}'
  */
 export const destroy = (
@@ -219,7 +219,7 @@ destroy.definition = {
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
- * @see app/Http/Controllers/CategoryController.php:54
+ * @see app/Http/Controllers/CategoryController.php:62
  * @route '/categories/{category}'
  */
 destroy.url = (
@@ -262,7 +262,7 @@ destroy.url = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
- * @see app/Http/Controllers/CategoryController.php:54
+ * @see app/Http/Controllers/CategoryController.php:62
  * @route '/categories/{category}'
  */
 destroy.delete = (
@@ -279,7 +279,7 @@ destroy.delete = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
- * @see app/Http/Controllers/CategoryController.php:54
+ * @see app/Http/Controllers/CategoryController.php:62
  * @route '/categories/{category}'
  */
 const destroyForm = (
@@ -301,7 +301,7 @@ const destroyForm = (
 
 /**
  * @see \App\Http\Controllers\CategoryController::destroy
- * @see app/Http/Controllers/CategoryController.php:54
+ * @see app/Http/Controllers/CategoryController.php:62
  * @route '/categories/{category}'
  */
 destroyForm.delete = (

@@ -24,6 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'organization_id',
+        'is_organization_admin',
     ];
 
     /**
@@ -49,6 +51,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'is_organization_admin' => 'boolean',
         ];
     }
 
@@ -67,5 +70,25 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role->name === 'super_admin';
+    }
+
+    public function isOrganizationAdmin(): bool
+    {
+        return (bool) $this->is_organization_admin;
+    }
+
+    public function belongsToOrganization(int $organizationId): bool
+    {
+        return $this->organization_id === $organizationId;
     }
 }

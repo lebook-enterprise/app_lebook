@@ -239,7 +239,7 @@ registerForm.head = (
 register.form = registerForm;
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -253,7 +253,7 @@ home.definition = {
 } satisfies RouteDefinition<['get', 'head']>;
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 home.url = (options?: RouteQueryOptions) => {
@@ -261,7 +261,7 @@ home.url = (options?: RouteQueryOptions) => {
 };
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -270,7 +270,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 });
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -279,7 +279,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 });
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -288,7 +288,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 });
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -297,7 +297,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 });
 
 /**
- * @see routes/web.php:11
+ * @see routes/web.php:15
  * @route '/'
  */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -314,7 +314,7 @@ home.form = homeForm;
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 export const dashboard = (
@@ -331,7 +331,7 @@ dashboard.definition = {
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -340,7 +340,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -350,7 +350,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -360,7 +360,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 const dashboardForm = (
@@ -372,7 +372,7 @@ const dashboardForm = (
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 dashboardForm.get = (
@@ -384,7 +384,7 @@ dashboardForm.get = (
 
 /**
  * @see \App\Http\Controllers\DashboardController::dashboard
- * @see app/Http/Controllers/DashboardController.php:10
+ * @see app/Http/Controllers/DashboardController.php:11
  * @route '/dashboard'
  */
 dashboardForm.head = (
@@ -403,7 +403,7 @@ dashboard.form = dashboardForm;
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 export const inventory = (
@@ -420,7 +420,7 @@ inventory.definition = {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 inventory.url = (options?: RouteQueryOptions) => {
@@ -429,7 +429,7 @@ inventory.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 inventory.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -439,7 +439,7 @@ inventory.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 inventory.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -449,7 +449,7 @@ inventory.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 const inventoryForm = (
@@ -461,7 +461,7 @@ const inventoryForm = (
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 inventoryForm.get = (
@@ -473,7 +473,7 @@ inventoryForm.get = (
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::inventory
- * @see app/Http/Controllers/InventoryMovementController.php:19
+ * @see app/Http/Controllers/InventoryMovementController.php:20
  * @route '/inventory'
  */
 inventoryForm.head = (
@@ -492,7 +492,7 @@ inventory.form = inventoryForm;
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 export const products = (
@@ -509,7 +509,7 @@ products.definition = {
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 products.url = (options?: RouteQueryOptions) => {
@@ -518,7 +518,7 @@ products.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 products.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -528,7 +528,7 @@ products.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 products.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -538,7 +538,7 @@ products.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 const productsForm = (
@@ -550,7 +550,7 @@ const productsForm = (
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 productsForm.get = (
@@ -562,7 +562,7 @@ productsForm.get = (
 
 /**
  * @see \App\Http\Controllers\ProductController::products
- * @see app/Http/Controllers/ProductController.php:12
+ * @see app/Http/Controllers/ProductController.php:14
  * @route '/products'
  */
 productsForm.head = (

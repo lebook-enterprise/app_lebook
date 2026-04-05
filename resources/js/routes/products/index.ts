@@ -6,7 +6,7 @@ import {
 } from './../../wayfinder';
 /**
  * @see \App\Http\Controllers\ProductController::store
- * @see app/Http/Controllers/ProductController.php:23
+ * @see app/Http/Controllers/ProductController.php:32
  * @route '/products'
  */
 export const store = (
@@ -23,7 +23,7 @@ store.definition = {
 
 /**
  * @see \App\Http\Controllers\ProductController::store
- * @see app/Http/Controllers/ProductController.php:23
+ * @see app/Http/Controllers/ProductController.php:32
  * @route '/products'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -32,7 +32,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\ProductController::store
- * @see app/Http/Controllers/ProductController.php:23
+ * @see app/Http/Controllers/ProductController.php:32
  * @route '/products'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -42,7 +42,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
  * @see \App\Http\Controllers\ProductController::store
- * @see app/Http/Controllers/ProductController.php:23
+ * @see app/Http/Controllers/ProductController.php:32
  * @route '/products'
  */
 const storeForm = (
@@ -54,7 +54,7 @@ const storeForm = (
 
 /**
  * @see \App\Http\Controllers\ProductController::store
- * @see app/Http/Controllers/ProductController.php:23
+ * @see app/Http/Controllers/ProductController.php:32
  * @route '/products'
  */
 storeForm.post = (

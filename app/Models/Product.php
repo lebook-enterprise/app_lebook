@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\OrganizationScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     protected $fillable = [
+        'organization_id',
         'category_id',
         'name',
         'sku',
@@ -30,23 +32,12 @@ class Product extends Model
         static::created(function (Product $product) {
             $product->stock()->create(['stock' => 0]);
         });
+
+        static::addGlobalScope(new OrganizationScope);
     }
 
     /**
      * Generate a unique SKU for a product.
-     *
-     * The SKU format is:
-     * PREFIX-ID-UNIQUE
-     *
-     * Example:
-     * PRO-000123-ABCD
-     *
-     * PREFIX  -> first 3 characters of the product name
-     * ID      -> incremental padded ID
-     * UNIQUE  -> random 4 character string
-     *
-     * @param  Product  $product
-     * @return string
      */
     public static function generateSku($product)
     {
@@ -58,45 +49,26 @@ class Product extends Model
         return "$prefix-$idPart-$unique";
     }
 
-    /**
-     * Get the stock value of the product
-     *
-     * @return HasOne
-     */
-    public function stock()
+    public function stock(): HasOne
     {
         return $this->hasOne(ProductStock::class);
     }
 
-    /**
-     * Get the movements of the product.
-     *
-     * @return HasMany
-     */
-    public function movements()
+    public function movements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
-    /**
-     * Get the category that the product belongs to
-     *
-     * @return BelongsTo
-     */
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * Increase the stock quantity for this product.
-     *
-     * Creates a stock record if one does not exist, increments the quantity,
-     * and logs the movement in the movements table.
-     *
-     * @param  int|string  $userId
-     * @param  int|null  $note
-     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function increaseStock(int $amount, $userId, $note = null): void
     {
         $stock = $this->stock()->firstOrCreate(
@@ -107,6 +79,7 @@ class Product extends Model
         $stock->increment('stock', $amount);
 
         $this->movements()->create([
+            'organization_id' => $this->organization_id,
             'product_id' => $this->id,
             'user_id' => $userId,
             'type' => 'in',
@@ -115,17 +88,6 @@ class Product extends Model
         ]);
     }
 
-    /**
-     * Decreases the stock quantity for this product.
-     *
-     * Creates a stock record if one does not exist, decreases the quantity,
-     * and logs the movement in the movements table. the exception is not
-     * needed cause it's being handled in the checkOut() at InventoryMovement
-     * controller.
-     *
-     * @param  int|string  $userId
-     * @param  int|null  $note
-     */
     public function decreaseStock(int $amount, $userId, $note = null): void
     {
         $stock = $this->stock()->firstOrCreate(
@@ -136,6 +98,7 @@ class Product extends Model
         $stock->decrement('stock', $amount);
 
         $this->movements()->create([
+            'organization_id' => $this->organization_id,
             'product_id' => $this->id,
             'user_id' => $userId,
             'type' => 'out',

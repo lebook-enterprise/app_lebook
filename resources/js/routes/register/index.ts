@@ -66,8 +66,98 @@ storeForm.post = (
 
 store.form = storeForm;
 
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+export const organization = (
+    options?: RouteQueryOptions,
+): RouteDefinition<'get'> => ({
+    url: organization.url(options),
+    method: 'get',
+});
+
+organization.definition = {
+    methods: ['get', 'head'],
+    url: '/organization/create',
+} satisfies RouteDefinition<['get', 'head']>;
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+organization.url = (options?: RouteQueryOptions) => {
+    return organization.definition.url + queryParams(options);
+};
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+organization.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: organization.url(options),
+    method: 'get',
+});
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+organization.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: organization.url(options),
+    method: 'head',
+});
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+const organizationForm = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'get'> => ({
+    action: organization.url(options),
+    method: 'get',
+});
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+organizationForm.get = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'get'> => ({
+    action: organization.url(options),
+    method: 'get',
+});
+
+/**
+ * @see \App\Http\Controllers\OrganizationController::organization
+ * @see app/Http/Controllers/OrganizationController.php:190
+ * @route '/organization/create'
+ */
+organizationForm.head = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'get'> => ({
+    action: organization.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        },
+    }),
+    method: 'get',
+});
+
+organization.form = organizationForm;
+
 const register = {
     store: Object.assign(store, store),
+    organization: Object.assign(organization, organization),
 };
 
 export default register;

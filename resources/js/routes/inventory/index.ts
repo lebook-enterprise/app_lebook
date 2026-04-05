@@ -6,7 +6,7 @@ import {
 } from './../../wayfinder';
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:43
+ * @see app/Http/Controllers/InventoryMovementController.php:76
  * @route '/inventory/check-in'
  */
 export const checkin = (
@@ -23,7 +23,7 @@ checkin.definition = {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:43
+ * @see app/Http/Controllers/InventoryMovementController.php:76
  * @route '/inventory/check-in'
  */
 checkin.url = (options?: RouteQueryOptions) => {
@@ -32,7 +32,7 @@ checkin.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:43
+ * @see app/Http/Controllers/InventoryMovementController.php:76
  * @route '/inventory/check-in'
  */
 checkin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -42,7 +42,7 @@ checkin.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:43
+ * @see app/Http/Controllers/InventoryMovementController.php:76
  * @route '/inventory/check-in'
  */
 const checkinForm = (
@@ -54,7 +54,7 @@ const checkinForm = (
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkin
- * @see app/Http/Controllers/InventoryMovementController.php:43
+ * @see app/Http/Controllers/InventoryMovementController.php:76
  * @route '/inventory/check-in'
  */
 checkinForm.post = (
@@ -68,7 +68,7 @@ checkin.form = checkinForm;
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:76
+ * @see app/Http/Controllers/InventoryMovementController.php:126
  * @route '/inventory/check-out'
  */
 export const checkout = (
@@ -85,7 +85,7 @@ checkout.definition = {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:76
+ * @see app/Http/Controllers/InventoryMovementController.php:126
  * @route '/inventory/check-out'
  */
 checkout.url = (options?: RouteQueryOptions) => {
@@ -94,7 +94,7 @@ checkout.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:76
+ * @see app/Http/Controllers/InventoryMovementController.php:126
  * @route '/inventory/check-out'
  */
 checkout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -104,7 +104,7 @@ checkout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:76
+ * @see app/Http/Controllers/InventoryMovementController.php:126
  * @route '/inventory/check-out'
  */
 const checkoutForm = (
@@ -116,7 +116,7 @@ const checkoutForm = (
 
 /**
  * @see \App\Http\Controllers\InventoryMovementController::checkout
- * @see app/Http/Controllers/InventoryMovementController.php:76
+ * @see app/Http/Controllers/InventoryMovementController.php:126
  * @route '/inventory/check-out'
  */
 checkoutForm.post = (
